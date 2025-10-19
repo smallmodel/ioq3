@@ -637,16 +637,13 @@ static void SV_RehashBans_f(void)
 	int index, filelen;
 	fileHandle_t readfrom;
 	char *textbuf, *curpos, *maskpos, *newlinepos, *endpos;
-	char filepath[MAX_QPATH];
 	
 	serverBansCount = 0;
 	
 	if(!sv_banFile->string || !*sv_banFile->string)
 		return;
 
-	Com_sprintf(filepath, sizeof(filepath), "%s/%s", FS_GetCurrentGameDir(), sv_banFile->string);
-
-	if((filelen = FS_BaseDir_FOpenFileRead(filepath, &readfrom)) >= 0)
+	if((filelen = FS_FOpenFileRead(sv_banFile->string, &readfrom, qtrue)) >= 0)
 	{
 		if(filelen < 2)
 		{
@@ -718,14 +715,11 @@ static void SV_WriteBans(void)
 {
 	int index;
 	fileHandle_t writeto;
-	char filepath[MAX_QPATH];
 	
 	if(!sv_banFile->string || !*sv_banFile->string)
 		return;
 	
-	Com_sprintf(filepath, sizeof(filepath), "%s/%s", FS_GetCurrentGameDir(), sv_banFile->string);
-
-	if((writeto = FS_BaseDir_FOpenFileWrite_HomeState(filepath)))
+	if((writeto = FS_FOpenFileWrite_HomeState(sv_banFile->string)))
 	{
 		char writebuf[128];
 		serverBan_t *curban;
